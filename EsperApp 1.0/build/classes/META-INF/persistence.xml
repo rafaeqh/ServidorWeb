@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+  <persistence-unit name="EsperAppPU" transaction-type="JTA">
+    <jta-data-source>java:/jboss/datasources/Turnos</jta-data-source>
+    <class>com.esperapp.entidades.Trabajo_1</class>
+    <class>com.esperapp.entidades.TurnoBackUp_1</class>
+    <class>com.esperapp.entidades.Usuario_1</class>
+    <class>com.esperapp.entidades.Servicio</class>
+    <class>com.esperapp.entidades.Empleado_1</class>
+    <class>com.esperapp.entidades.Entidad_1</class>
+    <class>com.esperapp.entidades.Sede_1</class>
+    <class>com.esperapp.entidades.Receptor_1</class>
+    <class>com.esperapp.entidades.Turno_1</class>
+    <class>com.esperapp.entidades.Administrador_1</class>
+    <class>com.esperapp.entidades.Empleado</class>
+    <class>com.esperapp.entidades.Usuario</class>
+    <class>com.esperapp.entidades.Administrador</class>
+    <class>com.esperapp.entidades.Receptor</class>
+    <class>com.esperapp.entidades.TurnoBackUp</class>
+    <class>com.esperapp.entidades.Sede</class>
+    <class>com.esperapp.entidades.Entidad</class>
+    <class>com.esperapp.entidades.Trabajo</class>
+    <class>com.esperapp.entidades.Turno</class>
+    <exclude-unlisted-classes>false</exclude-unlisted-classes>
+    <properties/>
+  </persistence-unit>
+</persistence>
