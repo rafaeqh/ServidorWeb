@@ -8,6 +8,7 @@ package com.esperapp.funciones.turnos;
 import com.esperapp.entidades.Empleado;
 import com.esperapp.entidades.Entidad;
 import com.esperapp.entidades.Sede;
+import com.esperapp.entidades.Servicio;
 import com.esperapp.entidades.Trabajo;
 import com.esperapp.entidades.TurnoBackUp;
 import java.util.List;
@@ -36,21 +37,21 @@ public interface AsignacionTurnosLocal {
 
     public boolean AgregarEntidad(String Nit, String Nombre, String NombreContacto, String Direccion, String TelefonoContacto, String Correo);
 
-    public int AgregarSede(String NitEntidad, String Nombre, String NombreContacto, String TelefonoContacto, String Correo);
+    public int AgregarSede(String NitEntidad, String Nombre, String NombreContacto, String TelefonoContacto, String Correo, String Direccion);
 
     public Vector<String> BuscarEntidad(String Nit);
 
     
 
-    public Trabajo HallarReceptor(String cedulaEmp);
+    //public Trabajo HallarReceptor(String cedulaEmp);
 
-    public TurnoBackUp TurnoReceptor(String cedulaEmp);
+    //public TurnoBackUp TurnoReceptor(String cedulaEmp);
 
     public String BuscarReceptorLibre();
 
     public boolean AgregarEmpleado(String cedula, String nombre, String contrasena, String sede);
 
-    public boolean AgregarReceptor(String sede);
+     public int  AgregarReceptor(String sede, String idServicio);
 
     
     public List<Entidad> BuscarEntidadesNombres();
@@ -63,6 +64,15 @@ public interface AsignacionTurnosLocal {
 
     public List<Empleado> BuscarEmpleado(String cedula);
     
+    public boolean loginUsuario(String idCorreo, String contra);
     
+    public boolean AgregarServicio (String codigoSede, String servicio);
+    
+    public List<Servicio> BuscarServiciosSede (String codigoSede);
+    
+    public boolean RegistarUsuario(String Nombre, String CorreoUsuario, String contrasena);
+    
+    
+     
      
 }

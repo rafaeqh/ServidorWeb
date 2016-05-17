@@ -8,6 +8,7 @@ package com.esperapp.ws;
 import com.esperapp.entidades.Empleado;
 import com.esperapp.entidades.Entidad;
 import com.esperapp.entidades.Sede;
+import com.esperapp.entidades.Servicio;
 import com.esperapp.entidades.TurnoBackUp;
 
 import com.esperapp.funciones.turnos.AsignacionTurnosLocal;
@@ -97,9 +98,9 @@ public class AsignarTurnos {
      * Web service operation
      */
     @WebMethod(operationName = "AgregarSede")
-    public int AgregarSede(@WebParam(name = "NitEntidad") String NitEntidad, @WebParam(name = "Nombre") String Nombre, @WebParam(name = "NombreContacto") String NombreContacto, @WebParam(name = "TelefonoContacto") String TelefonoContacto, @WebParam(name = "Correo") String Correo) {
+    public int AgregarSede(@WebParam(name = "NitEntidad") String NitEntidad, @WebParam(name = "Nombre") String Nombre, @WebParam(name = "NombreContacto") String NombreContacto, @WebParam(name = "TelefonoContacto") String TelefonoContacto, @WebParam(name = "Correo") String Correo,@WebParam(name = "Direccion") String Direccion) {
         //TODO write your implementation code here:
-        return at.AgregarSede(NitEntidad, Nombre, NombreContacto, TelefonoContacto, Correo);
+        return at.AgregarSede(NitEntidad, Nombre, NombreContacto, TelefonoContacto, Correo, Direccion);
         
     }
 
@@ -116,31 +117,24 @@ public class AsignarTurnos {
     /**
      * Web service operation
      */
-    @WebMethod(operationName = "TurnoReceptor")
+    /*@WebMethod(operationName = "TurnoReceptor")
     public TurnoBackUp TurnoReceptor(String cedulaEmp) {
         //TODO write your implementation code here:
         TurnoBackUp retorno = new TurnoBackUp();
         retorno = at.TurnoReceptor(cedulaEmp);
         return retorno;
     }
-
+*/
     /**
      * Web service operation
      */
+    
     @WebMethod(operationName = "AgregarEmpleado")
     public boolean AgregarEmpleado(@WebParam(name = "cedula") String cedula, @WebParam(name = "nombre") String nombre, @WebParam(name = "contrasena") String contrasena, @WebParam(name = "sede") String sede) {
         //TODO write your implementation code here:
         return  at.AgregarEmpleado(cedula, nombre, contrasena, sede);
     }
 
-    /**
-     * Web service operation
-     */
-    @WebMethod(operationName = "AgregarReceptor")
-    public boolean AgregarReceptor(@WebParam(name = "sede") String sede) {
-        //TODO write your implementation code here:
-        return at.AgregarReceptor(sede);
-    }
 
     /**
      * Web service operation
@@ -186,10 +180,47 @@ public class AsignarTurnos {
         //TODO write your implementation code here:
         return at.loginEmpleado(cedula, contra, sede);
     }
-
-
-
     
+@WebMethod(operationName = "loginUsuario")
+    public boolean loginUsuario(@WebParam(name = "correoId") String idCorreo, @WebParam(name = "contrasena") String contra) {
+        //TODO write your implementation code here:
+        return at.loginUsuario(idCorreo, contra);
+    }
 
+    /**
+     * Web service operation
+     */
+    @WebMethod(operationName = "BuscarServiciosSede")
+    public List<Servicio> BuscarServiciosSede(@WebParam(name = "codigoSede") String codigoSede) {
+        //TODO write your implementation code here:
+        return at.BuscarServiciosSede(codigoSede);
+    }
+
+    /**
+     * Web service operation
+     */
+    @WebMethod(operationName = "AgregarServicio")
+    public boolean AgregarServicio(@WebParam(name = "codigoSede") String codigoSede, @WebParam(name = "servicio") String servicio) {
+        //TODO write your implementation code here:
+        return at.AgregarServicio(codigoSede, servicio);
+    }
+
+    /**
+     * Web service operation
+     */
+    @WebMethod(operationName = "AgregarReceptor")
+    public int AgregarReceptor(@WebParam(name = "sede") String sede, @WebParam(name = "idServicio") String idServicio) {
+        //TODO write your implementation code here:
+        return at.AgregarReceptor(sede, idServicio);
+    }
+
+    /**
+     * Web service operation
+     */
+    @WebMethod(operationName = "RegistrarUsuario")
+    public boolean RegistrarUsuario(@WebParam(name = "Nombre") String Nombre, @WebParam(name = "CorreoUsuario") String CorreoUsuario, @WebParam(name = "contrasena") String contrasena) {
+        //TODO write your implementation code here:
+        return at.RegistarUsuario(Nombre, CorreoUsuario, contrasena);
+    }
 
 }

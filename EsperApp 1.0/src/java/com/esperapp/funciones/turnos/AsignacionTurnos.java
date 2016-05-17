@@ -195,7 +195,7 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
      * @return
      */
     @Override
-     public int AgregarSede(String NitEntidad, String Nombre, String NombreContacto, String TelefonoContacto, String Correo){
+     public int AgregarSede(String NitEntidad, String Nombre, String NombreContacto, String TelefonoContacto, String Correo, String Direccion){
     
         int retornar = 1 ;
         
@@ -243,6 +243,7 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
             sedeNueva.setNombreContacto(NombreContacto);
             sedeNueva.setTelefonoContacto(TelefonoContacto);
             sedeNueva.setCorreoContacto(Correo);
+            sedeNueva.setDireccion(Direccion);
             em.persist(sedeNueva);
             
             retornar = 1;
@@ -277,6 +278,7 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
              sedeNueva.setNombreContacto(NombreContacto);
              sedeNueva.setTelefonoContacto(TelefonoContacto);
              sedeNueva.setCorreoContacto(Correo);
+             sedeNueva.setDireccion(Direccion);
              em.persist(sedeNueva);
             
              retornar = ultimoId;
@@ -317,7 +319,7 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
      return vecRetornar;
      
      }
-    @Override
+    /*@Override
      public  TurnoBackUp TurnoReceptor(String cedulaEmp){
          List <Turno> turnos = new ArrayList<Turno>();
          Date fecha = new Date();
@@ -364,7 +366,7 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
          }
          return t;
      }
-
+*/
     @Override
     public boolean AgregarEmpleado(String cedula,String nombre,String contrasena,String sede){
       
@@ -464,12 +466,12 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
         return retorno;
     }
     
-    public boolean AgregarReceptor(String sede){
+    public int  AgregarReceptor(String sede, String idServicio){
     
-         boolean retorno = false ;
+         int retorno = -1 ;
          List<String> sedesLista;
          Sede sedeBuscar = new Sede();
-         
+         Servicio servicio = new Servicio();
          
          String upd = new String();
          upd= "select Id_Receptor from Receptor ";
@@ -483,8 +485,10 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
             sedesLista = q.getResultList();
             
             sedeBuscar=em.find(Sede.class, sede);
+            servicio = em.find(Servicio.class, idServicio);
             
-            if(sedeBuscar!=null){
+            if(sedeBuscar!=null && servicio!=null){
+                
                 
                 int idSede = sedesLista.size() + 1;
                 String id = Integer.toString(idSede);
@@ -492,8 +496,9 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
                 receptor.setSede(sedeBuscar);
                 receptor.setEstado("0");
                 receptor.setIdReceptor(id);
+                receptor.setIdServicio(servicio);
                 em.merge(receptor);
-                retorno = true;
+                retorno = idSede ;
             
             
             }
@@ -558,6 +563,7 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
             vecRetornar.add(3, sede.getNombreContacto());
             vecRetornar.add(4, sede.getTelefonoContacto());
             vecRetornar.add(5, sede.getCorreoContacto());
+            vecRetornar.add(6, sede.getDireccion());
             
         }
         }catch(Exception ex){
@@ -628,5 +634,131 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
      return vecRetornar;
      
      }
+     
+     //Metodos usuario-----------------------------------------------------------------------------------------------
+   
+    public boolean loginUsuario(String idCorreo, String contra){
+        boolean retorno = false;
+        Usuario usuario = new Usuario();
+        
+        try{
+            usuario = em.find(Usuario.class, idCorreo);
+            if(usuario.getCorreoId().equals(idCorreo)){
+                System.out.println("Nombre valido");
+                if(usuario.getContrasena().equals(contra)){
+                    System.out.println("contraseña valida");
+                    retorno = true;
+                }else{
+                    System.out.println("contraseña invalida");
+
+                }
+            }else{
+                System.out.println("Nombre invalido");
+            }
+        }catch(Exception ex){
+            retorno = false;
+        }
+        
+       return retorno;
+    }
+   
+    //-----------------------------------------------------------------
+    
+    public boolean AgregarServicio (String codigoSede, String servicio){
+    
+       boolean retorno = false ;
+         List<String> serviciosLista;
+         Sede sedeBuscar = new Sede();
+         
+         
+         String upd = new String();
+         upd= "select Id_Servicio from Servicio ";
+         Query q;
+         
+        
+         
+          try{
+              
+            q = em.createNativeQuery(upd);
+            serviciosLista = q.getResultList();
+            
+            sedeBuscar=em.find(Sede.class, codigoSede);
+            
+            if(sedeBuscar!=null){
+                
+                int idServicio = serviciosLista.size() + 1;
+                 String id = Integer.toString(idServicio);
+                Servicio servicioNuevo= new Servicio();
+                servicioNuevo.setTipo(servicio);
+                servicioNuevo.setIdServicio(id);
+                servicioNuevo.setSede(sedeBuscar);
+                em.merge(servicioNuevo);
+                retorno = true;
+            
+            
+            }
+            
+         
+             }catch(Exception ex){
+             
+             System.out.println("NO existe la sede");
+             
+         }
+                  
+         return retorno;
+
+    }
+     
+    public List<Servicio> BuscarServiciosSede (String codigoSede){
+     
+        List <Servicio> vecRetornar = null;
+        
+        String upd ;
+        upd= "select * from Servicio where Sede = '"+codigoSede+"'";
+        Query q;
+        
+        
+        try{
+            
+            q = em.createNativeQuery(upd,Servicio.class);
+            
+            vecRetornar = q.getResultList();
+            
+            
+        
+        }catch(Exception ex){
+             
+             System.out.println("error");
+             
+         }
+         
+     return vecRetornar;
+     
+     }
+    
+        public boolean RegistarUsuario(String Nombre, String CorreoUsuario, String contrasena){
+    
+        boolean retornar ;
+        
+        
+        Usuario usuarioNuevo = em.find(Usuario.class, CorreoUsuario);
+        
+        if(usuarioNuevo == null){
+            usuarioNuevo = new Usuario();
+            usuarioNuevo.setNombre(Nombre);
+            usuarioNuevo.setCorreoId(CorreoUsuario);
+            usuarioNuevo.setContrasena(contrasena);
+            em.merge(usuarioNuevo);
+            
+            retornar = true;
+        
+        }else{
+        
+            retornar = false;
+        }
+        
+        return retornar;
+        
+    }
 }
 
