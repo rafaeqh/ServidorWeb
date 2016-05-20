@@ -60,7 +60,7 @@ public interface AsignacionTurnosLocal {
 
     public List<String> BuscarSedeCodigo(String cod);
 
-    public List<Sede> BuscarSedesClase();
+    public List<Sede> BuscarSedesClase(String Nit);
 
     public List<Empleado> BuscarEmpleado(String cedula);
     

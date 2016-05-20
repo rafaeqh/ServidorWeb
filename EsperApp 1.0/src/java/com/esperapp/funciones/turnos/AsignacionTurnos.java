@@ -319,7 +319,6 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
      return vecRetornar;
      
      }
-    /*@Override
      public  TurnoBackUp TurnoReceptor(String cedulaEmp){
          List <Turno> turnos = new ArrayList<Turno>();
          Date fecha = new Date();
@@ -355,7 +354,7 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
          }
          return retorno;
      }
-    @Override
+    
      public Trabajo HallarReceptor(String cedulaEmp){
          Trabajo t = new Trabajo();
          try{
@@ -366,7 +365,6 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
          }
          return t;
      }
-*/
     @Override
     public boolean AgregarEmpleado(String cedula,String nombre,String contrasena,String sede){
       
@@ -579,13 +577,12 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
      
      
      
-         @Override
-     public List<Sede> BuscarSedesClase (){
+     public List<Sede> BuscarSedesClase (String Nit){
      
         List <Sede> vecRetornar = null;
         
         String upd ;
-        upd= "select * from Sede ";
+        upd= "select * from Sede where Entidad='"+Nit+"'";
         Query q;
         
         
@@ -760,5 +757,7 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
         return retornar;
         
     }
+
+    
 }
 

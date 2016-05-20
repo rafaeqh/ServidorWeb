@@ -158,9 +158,9 @@ public class AsignarTurnos {
      * Web service operation
      */
     @WebMethod(operationName = "BuscarSedesClase")
-    public List<Sede> BuscarSedesClase() {
+    public List<Sede> BuscarSedesClase(String Nit) {
         //TODO write your implementation code here:
-        return at.BuscarSedesClase();
+        return at.BuscarSedesClase(Nit);
     }
 
     /**
