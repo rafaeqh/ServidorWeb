@@ -157,12 +157,19 @@ public class AsignarTurnos {
     /**
      * Web service operation
      */
-    @WebMethod(operationName = "BuscarSedesClase")
-    public List<Sede> BuscarSedesClase(String Nit) {
+    @WebMethod(operationName = "BuscarSedesClaseXEntidad")
+    public List<Sede> BuscarSedesClase(@WebParam(name = "nit") String Nit) {
         //TODO write your implementation code here:
         return at.BuscarSedesClase(Nit);
     }
-
+    /**
+     * Web service operation
+     */
+    @WebMethod(operationName = "BuscarSedesClase")
+    public List<Sede> BuscarSedesClase() {
+        //TODO write your implementation code here:
+        return at.BuscarSedesClase();
+    }
     /**
      * Web service operation
      */

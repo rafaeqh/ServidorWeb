@@ -71,6 +71,8 @@ public interface AsignacionTurnosLocal {
     public List<Servicio> BuscarServiciosSede (String codigoSede);
     
     public boolean RegistarUsuario(String Nombre, String CorreoUsuario, String contrasena);
+
+    public List<Sede> BuscarSedesClase();
     
     
      

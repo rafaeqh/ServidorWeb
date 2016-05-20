@@ -574,7 +574,32 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
      
      }
      
+     public List<Sede> BuscarSedesClase (){
      
+        List <Sede> vecRetornar = null;
+        
+        String upd ;
+        upd= "select * from Sede";
+        Query q;
+        
+        
+        try{
+            
+            q = em.createNativeQuery(upd,Sede.class);
+            
+            vecRetornar = q.getResultList();
+            
+            
+        
+        }catch(Exception ex){
+             
+             System.out.println("error");
+             
+         }
+         
+     return vecRetornar;
+     
+     }
      
      
      public List<Sede> BuscarSedesClase (String Nit){
