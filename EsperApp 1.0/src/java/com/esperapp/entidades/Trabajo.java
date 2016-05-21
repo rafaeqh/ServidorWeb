@@ -20,25 +20,28 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Rafael
+ * @author Joako
  */
 @Entity
 @Table(name = "Trabajo")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Trabajo.findAll", query = "SELECT t FROM Trabajo t"),
-    @NamedQuery(name = "Trabajo.findByReceptor", query = "SELECT t FROM Trabajo t WHERE t.receptor = :receptor"),
-    @NamedQuery(name = "Trabajo.findByCedula", query = "SELECT t FROM Trabajo t WHERE t.empleado = :empleado")})
+    @NamedQuery(name = "Trabajo.findByReceptor", query = "SELECT t FROM Trabajo t WHERE t.receptor = :receptor")})
 public class Trabajo implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 60)
     @Column(name = "Receptor")
     private String receptor;
     @JoinColumn(name = "Receptor", referencedColumnName = "Id_Receptor", insertable = false, updatable = false)

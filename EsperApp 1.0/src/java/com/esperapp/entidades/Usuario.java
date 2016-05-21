@@ -16,12 +16,14 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Rafael
+ * @author Joako
  */
 @Entity
 @Table(name = "Usuario")
@@ -36,12 +38,18 @@ public class Usuario implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 60)
     @Column(name = "Correo_Id")
     private String correoId;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 60)
     @Column(name = "Nombre")
     private String nombre;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 60)
     @Column(name = "Contrasena")
     private String contrasena;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")

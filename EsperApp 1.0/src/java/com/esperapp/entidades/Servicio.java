@@ -18,12 +18,14 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Rafael
+ * @author Joako
  */
 @Entity
 @Table(name = "Servicio")
@@ -37,14 +39,20 @@ public class Servicio implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 60)
     @Column(name = "Id_Servicio")
     private String idServicio;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 60)
     @Column(name = "Tipo")
     private String tipo;
     @JoinColumn(name = "Sede", referencedColumnName = "ID_Sede")
     @ManyToOne(optional = false)
     private Sede sede;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "servicioID")
+    private Collection<Turno> turnoCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idServicio")
     private Collection<Receptor> receptorCollection;
 
@@ -82,6 +90,15 @@ public class Servicio implements Serializable {
 
     public void setSede(Sede sede) {
         this.sede = sede;
+    }
+
+    @XmlTransient
+    public Collection<Turno> getTurnoCollection() {
+        return turnoCollection;
+    }
+
+    public void setTurnoCollection(Collection<Turno> turnoCollection) {
+        this.turnoCollection = turnoCollection;
     }
 
     @XmlTransient
