@@ -319,30 +319,46 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
      return vecRetornar;
      
      }
-     public  TurnoBackUp TurnoReceptor(String cedulaEmp){
+     public  TurnoBackUp TurnoReceptor(String cedulaEmp, String idSede){
          List <Turno> turnos = new ArrayList<Turno>();
          Date fecha = new Date();
          fecha.getTime();
          TurnoBackUp retorno = new TurnoBackUp();
          Trabajo tr= new Trabajo();
-         Query q ;
-         q=em.createNativeQuery("select * from Turno",Turno.class);
+         Query q, q1 ;
+         int max;
+         System.out.println("cedula: "+cedulaEmp+"Sede= "+idSede);
+         q=em.createNativeQuery("select * from Turno where Sede='"+idSede+"'",Turno.class);
+         q1=em.createNativeQuery("select * from Turno_BackUp");
          System.out.println("antes try");
+         TurnoBackUp tb = new TurnoBackUp();
          try{
              turnos= q.getResultList();
+             max = q1.getResultList().size()+1;
              
              if(!turnos.isEmpty()){ 
                  for(Turno t: turnos){
-                     System.out.println("turno: " + t.toString());
+                     System.out.println("at= "+t.getAtendido());
                      if(t.getAtendido().equals("0")){
-                         TurnoBackUp tb = new TurnoBackUp();
-                         tb.setCorreoId(t.getUsuario().getCorreoId());
-                        
+                         tb.setConsecutivo(String.valueOf(max));
+                         System.out.println("consec "+tb.getConsecutivo());
                          tb.setTurno(t);
-                         tr= this.HallarReceptor(cedulaEmp);
+                         System.out.println("turno "+tb.getTurno().getNumTurno());
+                         tr = HallarReceptor(cedulaEmp);
                          tb.setReceptor(tr);
+                         System.out.println("receptor "+tb.getReceptor().getEmpleado().getNombre());
+                         tb.setCorreoId(t.getUsuario().getCorreoId());
+                         System.out.println("Correo "+tb.getCorreoId());
+                         //tb.setTurno(t);
+                         tb.setCedula(t.getUsuario().getCorreoId());
+                         System.out.println("cedula "+tb.getCedula());
+                         System.out.println("no entro al if 1");
                          tb.setFecha(fecha);
-                         em.persist(tb);
+                         System.out.println("fecha "+tb.getFecha());
+                         //em.persist(tb);
+                         retorno = tb;
+                     }else{
+                         System.out.println("no entro al if ");
                      }
                  }
              }else{
@@ -350,17 +366,27 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
                  retorno = null;
              }
          }catch(Exception ex){
-             System.out.println("No hay turnos"+ex);
+             System.out.println("No hay turnos "+ex.getLocalizedMessage());
+             //ex.toString();
          }
-         return retorno;
+         return tb;
      }
     
      public Trabajo HallarReceptor(String cedulaEmp){
          Trabajo t = new Trabajo();
+         Query q;
+         q=em.createNativeQuery("select * from Trabajo");
+         
          try{
-             t=em.find(Trabajo.class, cedulaEmp);
-             
+             List<Trabajo> trabajo = q.getResultList();
+             for(Trabajo tra : trabajo){
+                if(tra.getEmpleado().getEmpleadoPK().getCedula() == cedulaEmp){
+                    t=tra;
+                }
+         }
+             System.out.println("Empleado "+t.getEmpleado().getNombre());
          }catch(Exception ex){
+             ex.printStackTrace();
              t=null;
          }
          return t;
@@ -467,9 +493,9 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
     public int  AgregarReceptor(String sede, String idServicio){
     
          int retorno = -1 ;
-         List<String> sedesLista;
-         Sede sedeBuscar = new Sede();
-         Servicio servicio = new Servicio();
+         List<String> receptoresLista;
+         Sede sedeBuscar = null;
+         Servicio servicio = null;
          
          String upd = new String();
          upd= "select Id_Receptor from Receptor ";
@@ -480,7 +506,7 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
           try{
               
             q = em.createNativeQuery(upd);
-            sedesLista = q.getResultList();
+            receptoresLista = q.getResultList();
             
             sedeBuscar=em.find(Sede.class, sede);
             servicio = em.find(Servicio.class, idServicio);
@@ -488,15 +514,15 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
             if(sedeBuscar!=null && servicio!=null){
                 
                 
-                int idSede = sedesLista.size() + 1;
-                String id = Integer.toString(idSede);
+                int idReceptor = receptoresLista.size() + 1;
+                String id = Integer.toString(idReceptor);
                 Receptor receptor = new Receptor();
                 receptor.setSede(sedeBuscar);
                 receptor.setEstado("0");
                 receptor.setIdReceptor(id);
                 receptor.setIdServicio(servicio);
                 em.merge(receptor);
-                retorno = idSede ;
+                retorno = idReceptor ;
             
             
             }

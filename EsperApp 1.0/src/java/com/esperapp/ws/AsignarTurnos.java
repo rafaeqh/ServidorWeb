@@ -117,14 +117,14 @@ public class AsignarTurnos {
     /**
      * Web service operation
      */
-    /*@WebMethod(operationName = "TurnoReceptor")
-    public TurnoBackUp TurnoReceptor(String cedulaEmp) {
+    @WebMethod(operationName = "TurnoReceptor")
+    public TurnoBackUp TurnoReceptor(String cedulaEmp, String idSede) {
         //TODO write your implementation code here:
         TurnoBackUp retorno = new TurnoBackUp();
-        retorno = at.TurnoReceptor(cedulaEmp);
+        retorno = at.TurnoReceptor(cedulaEmp, idSede);
         return retorno;
     }
-*/
+
     /**
      * Web service operation
      */

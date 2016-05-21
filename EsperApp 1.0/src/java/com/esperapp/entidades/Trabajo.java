@@ -32,7 +32,8 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Trabajo.findAll", query = "SELECT t FROM Trabajo t"),
-    @NamedQuery(name = "Trabajo.findByReceptor", query = "SELECT t FROM Trabajo t WHERE t.receptor = :receptor")})
+    @NamedQuery(name = "Trabajo.findByReceptor", query = "SELECT t FROM Trabajo t WHERE t.receptor = :receptor"),
+    @NamedQuery(name = "Trabajo.findByCedula", query = "SELECT t FROM Trabajo t WHERE t.empleado = :empleado")})
 public class Trabajo implements Serializable {
 
     private static final long serialVersionUID = 1L;
