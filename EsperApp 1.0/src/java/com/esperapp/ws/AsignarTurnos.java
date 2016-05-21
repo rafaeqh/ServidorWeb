@@ -57,7 +57,7 @@ public class AsignarTurnos {
      * Web service operation
      */
     @WebMethod(operationName = "AsignarTurno")
-    public String AsignarTurno(@WebParam(name = "CorreoUsuario") String CorreoUsuario, @WebParam(name = "Id_Sede") Sede Id_Sede) {
+    public String AsignarTurno(@WebParam(name = "CorreoUsuario") String CorreoUsuario, @WebParam(name = "Id_Sede") String Id_Sede) {
         String retorno;
         retorno = at.asignaTurnos(CorreoUsuario, Id_Sede);
         return retorno;
@@ -66,12 +66,13 @@ public class AsignarTurnos {
     /**
      * Web service operation
      */
+    /*
     @WebMethod(operationName = "BuscarSede")
     public String BuscarSede(@WebParam(name = "CorreoUsuario") String CorreoUsuario, @WebParam(name = "Sede") String Id_Sede) {
         String retorno = new String();
         retorno = at.BuscarSede(CorreoUsuario, Id_Sede);
         return retorno;
-    }
+    }*/
 
     /**
      * Web service operation
@@ -114,16 +115,6 @@ public class AsignarTurnos {
         
     }
 
-    /**
-     * Web service operation
-     */
-    @WebMethod(operationName = "TurnoReceptor")
-    public TurnoBackUp TurnoReceptor(String cedulaEmp, String idSede) {
-        //TODO write your implementation code here:
-        TurnoBackUp retorno = new TurnoBackUp();
-        retorno = at.TurnoReceptor(cedulaEmp, idSede);
-        return retorno;
-    }
 
     /**
      * Web service operation
@@ -228,6 +219,15 @@ public class AsignarTurnos {
     public boolean RegistrarUsuario(@WebParam(name = "Nombre") String Nombre, @WebParam(name = "CorreoUsuario") String CorreoUsuario, @WebParam(name = "contrasena") String contrasena) {
         //TODO write your implementation code here:
         return at.RegistarUsuario(Nombre, CorreoUsuario, contrasena);
+    }
+
+    /**
+     * Web service operation
+     */
+    @WebMethod(operationName = "TurnoReceptor")
+    public TurnoBackUp TurnoReceptor(@WebParam(name = "cedulaEmp") String cedulaEmp, @WebParam(name = "idSede") String idSede) {
+        //TODO write your implementation code here:
+        return at.TurnoReceptor(cedulaEmp, idSede);
     }
 
 }

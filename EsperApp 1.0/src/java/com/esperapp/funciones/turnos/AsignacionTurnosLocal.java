@@ -27,9 +27,9 @@ public interface AsignacionTurnosLocal {
 
     public boolean loginEmpleado(String cedula, String contra,String sede);
 
-    public String asignaTurnos(String CorreoUsuario, Sede Id_Sede);
+    public String asignaTurnos(String CorreoUsuario, String Id_Sede);
 
-    public String BuscarSede(String CorreoUsuario, String Id_Sede);
+    //public String BuscarSede(String CorreoUsuario, String Id_Sede);
 
     public void CambiarEstado(String Id_Receptor);
     
@@ -43,7 +43,7 @@ public interface AsignacionTurnosLocal {
 
     public TurnoBackUp TurnoReceptor(String cedulaEmp, String idSede);
 
-    public Trabajo HallarReceptor(String cedulaEmp);
+    public Trabajo HallarReceptor(String cedulaEmp, String idSede);
 
    
 

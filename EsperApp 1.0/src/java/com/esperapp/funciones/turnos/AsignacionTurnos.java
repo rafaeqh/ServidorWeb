@@ -34,36 +34,47 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
         private EntityManager em;
     
     @Override
-    public String asignaTurnos(String CorreoUsuario, Sede Id_Sede){
+    public String asignaTurnos(String CorreoUsuario, String Id_Sede){
         Date fecha = new Date();
         fecha.getTime();
         Query q;
-        q = em.createNativeQuery("select * from dbo.Turno");
-        List <Turno>turnos=q.getResultList();
-        int ultimoTurno = turnos.size();
-        Turno auxT = new Turno();
-        ultimoTurno = ultimoTurno+1;
-        String ultimoTurn = Integer.toString(ultimoTurno);
-        Usuario us = em.find(Usuario.class, CorreoUsuario);
-        auxT.setFecha(fecha);
-        if(turnos.isEmpty()){
-            auxT.setNumTurno("1");
-            auxT.setIdTurno("1");
-        }else{
-            auxT.setNumTurno(ultimoTurn);
-            auxT.setIdTurno(ultimoTurn);
-        }
-        auxT.setUsuario(us);
-        auxT.setSede(Id_Sede);
+        int ultimoTurno = -1;
+        String ultimoTurnRetornar ="-1";
+         try{
+               q = em.createNativeQuery("select * from Turno");
         
-        auxT.setAtendido("0");
+                    List <Turno> turnos = q.getResultList();
+                    ultimoTurno = turnos.size()+1;
+                    Turno auxT = new Turno();
+                    
+                   ultimoTurnRetornar = Integer.toString(ultimoTurno);
+                    Usuario us = em.find(Usuario.class, CorreoUsuario);
+                    Sede sedeBuscar = em.find(Sede.class, Id_Sede);
+                    auxT.setFecha(fecha);
+                    if(turnos.isEmpty()){
+                        auxT.setNumTurno("1");
+                        auxT.setIdTurno("1");
+                    }else{
+                        auxT.setNumTurno(ultimoTurnRetornar);
+                        auxT.setIdTurno(ultimoTurnRetornar);
+                    }
+                    auxT.setUsuario(us);
+                    auxT.setSede(sedeBuscar);
+
+                    auxT.setAtendido("0");
         
         
         
         em.merge(auxT);
+             
+         }catch(Exception ex){
+             System.out.println("Error al buscar turnos ---------");
+         }
+      
+       
         
         //em.persist(auxT);
-        return ultimoTurn;
+        return ultimoTurnRetornar;
     }
     @Override
     public boolean loginAdmin(String idCorreo, String contra){
@@ -118,13 +129,13 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
         }
         return retorno;
     }
-    public String BuscarSede(String CorreoUsuario, String iDSede){
+    /*public String BuscarSede(String CorreoUsuario, String iDSede){
         Sede sed = em.find(Sede.class, iDSede);
         System.out.println("sede: " + sed.getNombre());
         String turno = this.asignaTurnos(CorreoUsuario, sed);
         
         return turno;
-    }
+    }*/
     public void CambiarEstado(String Id_Receptor){
         Receptor r = em.find(Receptor.class, Id_Receptor);
         String upd = new String();
@@ -329,7 +340,7 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
          int max;
          System.out.println("cedula: "+cedulaEmp+"Sede= "+idSede);
          q=em.createNativeQuery("select * from Turno where Sede='"+idSede+"'",Turno.class);
-         q1=em.createNativeQuery("select * from Turno_BackUp");
+         q1=em.createNativeQuery("select * from Turno_BackUp", TurnoBackUp.class);
          System.out.println("antes try");
          TurnoBackUp tb = new TurnoBackUp();
          try{
@@ -344,19 +355,20 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
                          System.out.println("consec "+tb.getConsecutivo());
                          tb.setTurno(t);
                          System.out.println("turno "+tb.getTurno().getNumTurno());
-                         tr = HallarReceptor(cedulaEmp);
+                         tr = HallarReceptor(cedulaEmp, idSede);
                          tb.setReceptor(tr);
                          System.out.println("receptor "+tb.getReceptor().getEmpleado().getNombre());
                          tb.setCorreoId(t.getUsuario().getCorreoId());
                          System.out.println("Correo "+tb.getCorreoId());
-                         //tb.setTurno(t);
-                         tb.setCedula(t.getUsuario().getCorreoId());
+                         tb.setTurno(t);
+                         tb.setCedula(cedulaEmp);
                          System.out.println("cedula "+tb.getCedula());
                          System.out.println("no entro al if 1");
                          tb.setFecha(fecha);
                          System.out.println("fecha "+tb.getFecha());
-                         //em.persist(tb);
+                         em.persist(tb);
                          retorno = tb;
+                         return tb;
                      }else{
                          System.out.println("no entro al if ");
                      }
@@ -372,23 +384,19 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
          return tb;
      }
     
-     public Trabajo HallarReceptor(String cedulaEmp){
+     public Trabajo HallarReceptor(String cedulaEmp, String idSede){
          Trabajo t = new Trabajo();
+         Vector<String> empleadoSede = null ;
          Query q;
-         q=em.createNativeQuery("select * from Trabajo");
+         q=em.createNativeQuery("SELECT * FROM Trabajo where Empleado ='"+cedulaEmp+"' and Sede='"+idSede+"'", Trabajo.class);
          
          try{
-             List<Trabajo> trabajo = q.getResultList();
-             for(Trabajo tra : trabajo){
-                if(tra.getEmpleado().getEmpleadoPK().getCedula() == cedulaEmp){
-                    t=tra;
-                }
-         }
-             System.out.println("Empleado "+t.getEmpleado().getNombre());
+             t=(Trabajo) q.getSingleResult();
          }catch(Exception ex){
              ex.printStackTrace();
              t=null;
          }
+         System.out.println("en trabajo "+t.getEmpleado().getNombre());
          return t;
      }
     @Override
