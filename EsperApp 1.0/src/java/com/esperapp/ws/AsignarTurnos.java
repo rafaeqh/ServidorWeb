@@ -224,10 +224,19 @@ public class AsignarTurnos {
     /**
      * Web service operation
      */
-    @WebMethod(operationName = "TurnoReceptor")
+    @WebMethod(operationName = "AtenderCliente")
+    public List<String> AtenderCliente(@WebParam(name = "idSede") String idSede, @WebParam(name = "cedula") String cedula) {
+        //TODO write your implementation code here:
+        return null;
+    }
+
+    /**
+     * Web service operation
+     */
+    /*@WebMethod(operationName = "TurnoReceptor")
     public TurnoBackUp TurnoReceptor(@WebParam(name = "cedulaEmp") String cedulaEmp, @WebParam(name = "idSede") String idSede) {
         //TODO write your implementation code here:
         return at.TurnoReceptor(cedulaEmp, idSede);
-    }
+    }*/
 
 }

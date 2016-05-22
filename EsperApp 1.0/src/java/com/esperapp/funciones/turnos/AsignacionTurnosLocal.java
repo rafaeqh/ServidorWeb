@@ -41,7 +41,7 @@ public interface AsignacionTurnosLocal {
 
     public Vector<String> BuscarEntidad(String Nit);
 
-    public TurnoBackUp TurnoReceptor(String cedulaEmp, String idSede);
+    //public TurnoBackUp TurnoReceptor(String cedulaEmp, String idSede);
 
     public Trabajo HallarReceptor(String cedulaEmp, String idSede);
 
@@ -73,6 +73,8 @@ public interface AsignacionTurnosLocal {
     public boolean RegistarUsuario(String Nombre, String CorreoUsuario, String contrasena);
 
     public List<Sede> BuscarSedesClase();
+
+    public List<String> AtenderCliente(String idSede, String cedula);
 
     
     
