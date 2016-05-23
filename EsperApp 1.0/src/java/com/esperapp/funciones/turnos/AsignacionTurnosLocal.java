@@ -79,7 +79,10 @@ public interface AsignacionTurnosLocal {
 
     public Turno buscarTurno(String turno);
 
-    
+    public boolean cancelarTurno(String Id_Turno);
+
+    public Trabajo asignarTrabajadorParaUsuario(String Cedula);
+
     
     
      

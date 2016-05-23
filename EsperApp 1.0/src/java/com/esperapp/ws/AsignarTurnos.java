@@ -9,6 +9,7 @@ import com.esperapp.entidades.Empleado;
 import com.esperapp.entidades.Entidad;
 import com.esperapp.entidades.Sede;
 import com.esperapp.entidades.Servicio;
+import com.esperapp.entidades.Trabajo;
 import com.esperapp.entidades.Turno;
 import com.esperapp.entidades.TurnoBackUp;
 
@@ -239,6 +240,33 @@ public class AsignarTurnos {
     public Turno buscarTurno(@WebParam(name = "turno") String turno) {
         //TODO write your implementation code here:
         return at.buscarTurno(turno);
+    }
+
+    /**
+     * Web service operation
+     */
+    @WebMethod(operationName = "EnviarNotificacion")
+    public String EnviarNotificacion(@WebParam(name = "idCorreo") String idCorreo, @WebParam(name = "mensaje") String mensaje) {
+        //TODO write your implementation code here:
+        return null;
+    }
+
+    /**
+     * Web service operation
+     */
+    @WebMethod(operationName = "cancelarTurno")
+    public Boolean cancelarTurno(@WebParam(name = "Id_Turno") String Id_Turno) {
+        //TODO write your implementation code here:
+        return at.cancelarTurno(Id_Turno);
+    }
+
+    /**
+     * Web service operation
+     */
+    @WebMethod(operationName = "asignarTrabajadorParaUsuario")
+    public Trabajo asignarTrabajadorParaUsuario(@WebParam(name = "Cedula") String Cedula) {
+        //TODO write your implementation code here:
+        return null;
     }
 
     /**
