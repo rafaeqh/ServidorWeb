@@ -18,11 +18,13 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Rafael
+ * @author Joako
  */
 @Entity
 @Table(name = "Turno_BackUp")
@@ -38,16 +40,23 @@ public class TurnoBackUp implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 60)
     @Column(name = "Consecutivo")
     private String consecutivo;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 60)
     @Column(name = "Correo_Id")
     private String correoId;
     @Basic(optional = false)
+    @NotNull
     @Column(name = "Fecha")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 60)
     @Column(name = "Cedula")
     private String cedula;
     @JoinColumn(name = "Turno", referencedColumnName = "Id_Turno")

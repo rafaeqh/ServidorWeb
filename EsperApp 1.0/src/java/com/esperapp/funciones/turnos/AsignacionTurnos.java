@@ -10,6 +10,7 @@ import com.esperapp.entidades.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import javax.ejb.Stateless;
@@ -32,39 +33,97 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
     }
     @PersistenceContext (unitName = "EsperAppPU")
         private EntityManager em;
-    
+    //----------------------METODOS DE TURNOS--------------------------------------
     @Override
-    public String asignaTurnos(String CorreoUsuario, Sede Id_Sede){
+    public String asignaTurnos(String CorreoUsuario, String Id_Sede, String Id_Servicio){
         Date fecha = new Date();
         fecha.getTime();
         Query q;
-        q = em.createNativeQuery("select * from dbo.Turno");
-        List <Turno>turnos=q.getResultList();
-        int ultimoTurno = turnos.size();
-        Turno auxT = new Turno();
-        ultimoTurno = ultimoTurno+1;
-        String ultimoTurn = Integer.toString(ultimoTurno);
-        Usuario us = em.find(Usuario.class, CorreoUsuario);
-        auxT.setFecha(fecha);
-        if(turnos.isEmpty()){
-            auxT.setNumTurno("1");
-            auxT.setIdTurno("1");
-        }else{
-            auxT.setNumTurno(ultimoTurn);
-            auxT.setIdTurno(ultimoTurn);
-        }
-        auxT.setUsuario(us);
-        auxT.setSede(Id_Sede);
+        int ultimoTurno = -1;
+        String ultimoTurnRetornar ="-1";
+         try{
+               q = em.createNativeQuery("select * from Turno");
         
-        auxT.setAtendido("0");
+                    List <Turno> turnos = q.getResultList();
+                    ultimoTurno = turnos.size()+1;
+                    Turno auxT = new Turno();
+                    
+                   ultimoTurnRetornar = Integer.toString(ultimoTurno);
+                    Usuario us = em.find(Usuario.class, CorreoUsuario);
+                    Sede sedeBuscar = em.find(Sede.class, Id_Sede);
+                    Servicio servicioID = em.find(Servicio.class, Id_Servicio);
+                    auxT.setFecha(fecha);
+                    if(turnos.isEmpty()){
+                        auxT.setNumTurno("1");
+                        auxT.setIdTurno("1");
+                    }else{
+                        auxT.setNumTurno(ultimoTurnRetornar);
+                        auxT.setIdTurno(ultimoTurnRetornar);
+                    }
+                    auxT.setUsuario(us);
+                    auxT.setSede(sedeBuscar);
+                    auxT.setServicioID(servicioID);
+
+                    auxT.setAtendido("0");
         
         
         
         em.merge(auxT);
+             
+         }catch(Exception ex){
+             System.out.println("Error al buscar turnos ---------");
+         }
+      
+       
         
         //em.persist(auxT);
-        return ultimoTurn;
+        return ultimoTurnRetornar;
     }
+    public Turno buscarTurno(String turno){
+        Turno t = new Turno();
+        try{
+           t = em.find(Turno.class, turno);
+        }catch(Exception e){
+            t=null;
+        }
+        return t;
+    }
+    @Override
+    public boolean cancelarTurno(String Id_Turno){
+        boolean retorno = false;
+        Query q = null;
+        int i=0;
+        Turno t = em.find(Turno.class, Id_Turno);
+        String upd = new String();
+        System.out.println("Turno "+t.getUsuario().getNombre()+"at "+t.getAtendido());
+        if(t.getAtendido().equals("0")){
+            upd = "update Turno set Atendido = 2 where Id_Turno = "+Id_Turno;
+            System.out.println(upd);
+            try{
+                q=em.createNativeQuery(upd);
+                i= q.executeUpdate();
+                retorno = true;
+                
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+        
+        return retorno;      
+    }
+    public Trabajo asignarTrabajadorParaUsuario(String Cedula){
+        Trabajo retorno = new Trabajo();
+        Query q;
+        q= em.createNativeQuery("select * from Trabajo where Empleado='"+Cedula);
+        try{
+            retorno = (Trabajo) q.getSingleResult();
+            
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return retorno;
+    }
+    //--------------------------------------------------------------------------------
     @Override
     public boolean loginAdmin(String idCorreo, String contra){
         boolean retorno = false;
@@ -118,13 +177,13 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
         }
         return retorno;
     }
-    public String BuscarSede(String CorreoUsuario, String iDSede){
+    /*public String BuscarSede(String CorreoUsuario, String iDSede){
         Sede sed = em.find(Sede.class, iDSede);
         System.out.println("sede: " + sed.getNombre());
         String turno = this.asignaTurnos(CorreoUsuario, sed);
         
         return turno;
-    }
+    }*/
     public void CambiarEstado(String Id_Receptor){
         Receptor r = em.find(Receptor.class, Id_Receptor);
         String upd = new String();
@@ -319,54 +378,96 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
      return vecRetornar;
      
      }
-    /*@Override
-     public  TurnoBackUp TurnoReceptor(String cedulaEmp){
+     /*
+     public  TurnoBackUp TurnoReceptor(String cedulaEmp, String idSede){
          List <Turno> turnos = new ArrayList<Turno>();
          Date fecha = new Date();
          fecha.getTime();
-         TurnoBackUp retorno = new TurnoBackUp();
+         Turno t = new Turno();
+         TurnoBackUp tb = new TurnoBackUp();
          Trabajo tr= new Trabajo();
-         Query q ;
-         q=em.createNativeQuery("select * from Turno",Turno.class);
-         System.out.println("antes try");
+         Query q, q1 ;
+         int max;
+         System.out.println("cedula: "+cedulaEmp+"Sede= "+idSede);
+         q=em.createNativeQuery("select * from Turno where Sede='"+idSede+"' and Atendido='0'",Turno.class);
+         q1=em.createNativeQuery("select * from Turno_BackUp", TurnoBackUp.class);
          try{
              turnos= q.getResultList();
+             max = q1.getResultList().size()+1;
              
              if(!turnos.isEmpty()){ 
-                 for(Turno t: turnos){
-                     System.out.println("turno: " + t.toString());
-                     if(t.getAtendido().equals("0")){
-                         TurnoBackUp tb = new TurnoBackUp();
-                         tb.setCorreoId(t.getUsuario().getCorreoId());
-                        
-                         tb.setTurno(t);
-                         tr= this.HallarReceptor(cedulaEmp);
-                         tb.setReceptor(tr);
-                         tb.setFecha(fecha);
-                         em.persist(tb);
-                     }
-                 }
+                Iterator<Turno> itTurno = turnos.iterator();
+                t=itTurno.next();
+                tb.setConsecutivo(String.valueOf(max));
+                tb.setCedula(cedulaEmp);
+                tb.setCorreoId(t.getUsuario().getCorreoId());
+                tb.setFecha(fecha);
+                tr=HallarReceptor(cedulaEmp, idSede);
+                tb.setReceptor(tr);
+                tb.setTurno(t);
+                em.merge(tb);
              }else{
                  System.out.println("no encontro turno");
-                 retorno = null;
+                 tb = null;
              }
          }catch(Exception ex){
-             System.out.println("No hay turnos"+ex);
+             System.out.println("No hay turnos "+ex.getLocalizedMessage());
          }
-         return retorno;
-     }
-    @Override
-     public Trabajo HallarReceptor(String cedulaEmp){
+         return tb;
+     }*/
+    
+     public Trabajo HallarReceptor(String cedulaEmp, String idSede){
          Trabajo t = new Trabajo();
+         Vector<String> empleadoSede = null ;
+         Query q;
+         q=em.createNativeQuery("SELECT * FROM Trabajo where Empleado ='"+cedulaEmp+"' and Sede='"+idSede+"'", Trabajo.class);
+         
          try{
-             t=em.find(Trabajo.class, cedulaEmp);
-             
+             t=(Trabajo) q.getSingleResult();
          }catch(Exception ex){
+             ex.printStackTrace();
              t=null;
          }
+         System.out.println("en trabajo "+t.getEmpleado().getNombre()+" "+t.getReceptor1().getSede().getNombre());
          return t;
      }
-*/
+     /*public Turno PedirTurnoEmpleado(String idSede, String Cedula){
+         Query q;
+         List<Turno> Turnos;
+         q=em.createNativeQuery("select * from Turno where Atendido='0' and Sede='"+idSede+"'", Turno.class );
+         try{
+             Turnos = q.getResultList();
+             
+         }catch(Exception ex){
+             ex.printStackTrace();
+         }
+     }
+     public Trabajo NoAtendido(String turno, String idSede, String idServicio){
+         Query q, q1, q2; 
+         List<Trabajo> trabajadores;
+         Turno t;
+         Trabajo retorno = null;
+         Receptor receptor;
+         q=em.createNativeQuery("select * from Trabajo where Sede='"+idSede+"'", Trabajo.class);
+         q1=em.createNativeQuery("select * from Turno where Atendido='0' and Id_Turno='"+turno+"'", Turno.class );
+         q2=em.createNativeQuery("select * from Receptor where Id_Servicio='"+idServicio+"' and Estado='0'", Receptor.class);
+         q2=em.createNativeQuery("select * from Empleado where Sede='"+idSede+"'", Receptor.class);
+         
+         try{
+             trabajadores = q.getResultList();
+             
+             t = (Turno) q1.getSingleResult();
+             receptor=(Receptor) q2.getSingleResult();
+             if(t.getServicioID().getIdServicio().equals(idServicio)){
+                 retorno.setReceptor1(receptor);
+                 retorno.setEmpleado(receptor.getTrabajo().getEmpleado());
+             }
+         }catch(Exception e){
+             e.printStackTrace();
+         }
+         return retorno;
+    }
+     */
     @Override
     public boolean AgregarEmpleado(String cedula,String nombre,String contrasena,String sede){
       
@@ -469,9 +570,9 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
     public int  AgregarReceptor(String sede, String idServicio){
     
          int retorno = -1 ;
-         List<String> sedesLista;
-         Sede sedeBuscar = new Sede();
-         Servicio servicio = new Servicio();
+         List<String> receptoresLista;
+         Sede sedeBuscar = null;
+         Servicio servicio = null;
          
          String upd = new String();
          upd= "select Id_Receptor from Receptor ";
@@ -482,7 +583,7 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
           try{
               
             q = em.createNativeQuery(upd);
-            sedesLista = q.getResultList();
+            receptoresLista = q.getResultList();
             
             sedeBuscar=em.find(Sede.class, sede);
             servicio = em.find(Servicio.class, idServicio);
@@ -490,15 +591,15 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
             if(sedeBuscar!=null && servicio!=null){
                 
                 
-                int idSede = sedesLista.size() + 1;
-                String id = Integer.toString(idSede);
+                int idReceptor = receptoresLista.size() + 1;
+                String id = Integer.toString(idReceptor);
                 Receptor receptor = new Receptor();
                 receptor.setSede(sedeBuscar);
                 receptor.setEstado("0");
                 receptor.setIdReceptor(id);
                 receptor.setIdServicio(servicio);
                 em.merge(receptor);
-                retorno = idSede ;
+                retorno = idReceptor ;
             
             
             }
@@ -576,16 +677,40 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
      
      }
      
-     
-     
-     
-         @Override
      public List<Sede> BuscarSedesClase (){
      
         List <Sede> vecRetornar = null;
         
         String upd ;
-        upd= "select * from Sede ";
+        upd= "select * from Sede";
+        Query q;
+        
+        
+        try{
+            
+            q = em.createNativeQuery(upd,Sede.class);
+            
+            vecRetornar = q.getResultList();
+            
+            
+        
+        }catch(Exception ex){
+             
+             System.out.println("error");
+             
+         }
+         
+     return vecRetornar;
+     
+     }
+     
+     
+     public List<Sede> BuscarSedesClase (String Nit){
+     
+        List <Sede> vecRetornar = null;
+        
+        String upd ;
+        upd= "select * from Sede where Entidad='"+Nit+"'";
         Query q;
         
         
@@ -760,5 +885,52 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
         return retornar;
         
     }
+        public List<String> AtenderCliente(String idSede, String cedula){
+          List<String> retorno = new ArrayList<String>() ;
+          Trabajo trabajo;
+          List<Turno> turnosAtender;
+          Turno turno =null;
+          Empleado emp = new Empleado();
+          String upd = new String();
+          String upd1 = new String();
+          upd = "select * from Turno where Sede='"+idSede+"'and Atendido = '0'";
+          
+          Query q, q1;
+          Usuario usuario = null;
+
+          try{
+            
+            emp = em.find(Empleado.class, cedula);
+            q = em.createNativeQuery(upd,Turno.class);
+            turnosAtender = q.getResultList();
+
+            if(!turnosAtender.isEmpty()){
+                
+                Iterator<Turno> It = turnosAtender.iterator();
+                turno = It.next();
+                usuario = turno.getUsuario();
+                System.out.println("turnoooo-------------------"+turno.getIdTurno());
+                String aux = turno.getIdTurno();
+                retorno.add(aux);
+                retorno.add(usuario.getNombre());
+                retorno.add(usuario.getCorreoId());
+                
+            
+            }
+            
+         
+             }catch(Exception ex){
+             
+                 ex.printStackTrace();
+             System.out.println("NO existe la sede");
+             
+         }
+      
+      
+      
+      return retorno;
+      }
+
+    
 }
 

@@ -9,6 +9,8 @@ import com.esperapp.entidades.Empleado;
 import com.esperapp.entidades.Entidad;
 import com.esperapp.entidades.Sede;
 import com.esperapp.entidades.Servicio;
+import com.esperapp.entidades.Trabajo;
+import com.esperapp.entidades.Turno;
 import com.esperapp.entidades.TurnoBackUp;
 
 import com.esperapp.funciones.turnos.AsignacionTurnosLocal;
@@ -57,21 +59,23 @@ public class AsignarTurnos {
      * Web service operation
      */
     @WebMethod(operationName = "AsignarTurno")
-    public String AsignarTurno(@WebParam(name = "CorreoUsuario") String CorreoUsuario, @WebParam(name = "Id_Sede") Sede Id_Sede) {
+    public String AsignarTurno(@WebParam(name = "CorreoUsuario") String CorreoUsuario, @WebParam(name = "Id_Sede") String Id_Sede, @WebParam(name = "Id_Servicio") String Id_Servicio) {
         String retorno;
-        retorno = at.asignaTurnos(CorreoUsuario, Id_Sede);
+        retorno = at.asignaTurnos(CorreoUsuario, Id_Sede, Id_Servicio);
         return retorno;
     }
+    
 
     /**
      * Web service operation
      */
+    /*
     @WebMethod(operationName = "BuscarSede")
     public String BuscarSede(@WebParam(name = "CorreoUsuario") String CorreoUsuario, @WebParam(name = "Sede") String Id_Sede) {
         String retorno = new String();
         retorno = at.BuscarSede(CorreoUsuario, Id_Sede);
         return retorno;
-    }
+    }*/
 
     /**
      * Web service operation
@@ -114,17 +118,7 @@ public class AsignarTurnos {
         
     }
 
-    /**
-     * Web service operation
-     */
-    /*@WebMethod(operationName = "TurnoReceptor")
-    public TurnoBackUp TurnoReceptor(String cedulaEmp) {
-        //TODO write your implementation code here:
-        TurnoBackUp retorno = new TurnoBackUp();
-        retorno = at.TurnoReceptor(cedulaEmp);
-        return retorno;
-    }
-*/
+
     /**
      * Web service operation
      */
@@ -157,12 +151,19 @@ public class AsignarTurnos {
     /**
      * Web service operation
      */
+    @WebMethod(operationName = "BuscarSedesClaseXEntidad")
+    public List<Sede> BuscarSedesClase(@WebParam(name = "nit") String Nit) {
+        //TODO write your implementation code here:
+        return at.BuscarSedesClase(Nit);
+    }
+    /**
+     * Web service operation
+     */
     @WebMethod(operationName = "BuscarSedesClase")
     public List<Sede> BuscarSedesClase() {
         //TODO write your implementation code here:
         return at.BuscarSedesClase();
     }
-
     /**
      * Web service operation
      */
@@ -222,5 +223,59 @@ public class AsignarTurnos {
         //TODO write your implementation code here:
         return at.RegistarUsuario(Nombre, CorreoUsuario, contrasena);
     }
+
+    /**
+     * Web service operation
+     */
+    @WebMethod(operationName = "AtenderCliente")
+    public List<String> AtenderCliente(@WebParam(name = "idSede") String idSede, @WebParam(name = "cedula") String cedula) {
+        //TODO write your implementation code here:
+        return null;
+    }
+
+    /**
+     * Web service operation
+     */
+    @WebMethod(operationName = "buscarTurno")
+    public Turno buscarTurno(@WebParam(name = "turno") String turno) {
+        //TODO write your implementation code here:
+        return at.buscarTurno(turno);
+    }
+
+    /**
+     * Web service operation
+     */
+    @WebMethod(operationName = "EnviarNotificacion")
+    public String EnviarNotificacion(@WebParam(name = "idCorreo") String idCorreo, @WebParam(name = "mensaje") String mensaje) {
+        //TODO write your implementation code here:
+        return null;
+    }
+
+    /**
+     * Web service operation
+     */
+    @WebMethod(operationName = "cancelarTurno")
+    public Boolean cancelarTurno(@WebParam(name = "Id_Turno") String Id_Turno) {
+        //TODO write your implementation code here:
+        return at.cancelarTurno(Id_Turno);
+    }
+
+    /**
+     * Web service operation
+     */
+    @WebMethod(operationName = "asignarTrabajadorParaUsuario")
+    public Trabajo asignarTrabajadorParaUsuario(@WebParam(name = "Cedula") String Cedula) {
+        //TODO write your implementation code here:
+        return null;
+    }
+
+    /**
+     * Web service operation
+     */
+    /*@WebMethod(operationName = "TurnoReceptor")
+    public TurnoBackUp TurnoReceptor(@WebParam(name = "cedulaEmp") String cedulaEmp, @WebParam(name = "idSede") String idSede) {
+        //TODO write your implementation code here:
+        return at.TurnoReceptor(cedulaEmp, idSede);
+    }*/
 
 }

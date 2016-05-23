@@ -18,12 +18,14 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Rafael
+ * @author Joako
  */
 @Entity
 @Table(name = "Empleado")
@@ -40,9 +42,13 @@ public class Empleado implements Serializable {
     @EmbeddedId
     protected EmpleadoPK empleadoPK;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 60)
     @Column(name = "Nombre")
     private String nombre;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 60)
     @Column(name = "Contrasena")
     private String contrasena;
     @JoinColumn(name = "Sede", referencedColumnName = "ID_Sede", insertable = false, updatable = false)

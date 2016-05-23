@@ -10,6 +10,7 @@ import com.esperapp.entidades.Entidad;
 import com.esperapp.entidades.Sede;
 import com.esperapp.entidades.Servicio;
 import com.esperapp.entidades.Trabajo;
+import com.esperapp.entidades.Turno;
 import com.esperapp.entidades.TurnoBackUp;
 import java.util.List;
 import java.util.Vector;
@@ -27,9 +28,9 @@ public interface AsignacionTurnosLocal {
 
     public boolean loginEmpleado(String cedula, String contra,String sede);
 
-    public String asignaTurnos(String CorreoUsuario, Sede Id_Sede);
+    public String asignaTurnos(String CorreoUsuario, String Id_Sede, String Id_Servicio);
 
-    public String BuscarSede(String CorreoUsuario, String Id_Sede);
+    //public String BuscarSede(String CorreoUsuario, String Id_Sede);
 
     public void CambiarEstado(String Id_Receptor);
     
@@ -41,11 +42,11 @@ public interface AsignacionTurnosLocal {
 
     public Vector<String> BuscarEntidad(String Nit);
 
-    
+    //public TurnoBackUp TurnoReceptor(String cedulaEmp, String idSede);
 
-    //public Trabajo HallarReceptor(String cedulaEmp);
+    public Trabajo HallarReceptor(String cedulaEmp, String idSede);
 
-    //public TurnoBackUp TurnoReceptor(String cedulaEmp);
+   
 
     public String BuscarReceptorLibre();
 
@@ -60,7 +61,7 @@ public interface AsignacionTurnosLocal {
 
     public List<String> BuscarSedeCodigo(String cod);
 
-    public List<Sede> BuscarSedesClase();
+    public List<Sede> BuscarSedesClase(String Nit);
 
     public List<Empleado> BuscarEmpleado(String cedula);
     
@@ -71,6 +72,17 @@ public interface AsignacionTurnosLocal {
     public List<Servicio> BuscarServiciosSede (String codigoSede);
     
     public boolean RegistarUsuario(String Nombre, String CorreoUsuario, String contrasena);
+
+    public List<Sede> BuscarSedesClase();
+
+    public List<String> AtenderCliente(String idSede, String cedula);
+
+    public Turno buscarTurno(String turno);
+
+    public boolean cancelarTurno(String Id_Turno);
+
+    public Trabajo asignarTrabajadorParaUsuario(String Cedula);
+
     
     
      

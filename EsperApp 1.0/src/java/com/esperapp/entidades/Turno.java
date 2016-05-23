@@ -21,12 +21,14 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Rafael
+ * @author Joako
  */
 @Entity
 @Table(name = "Turno")
@@ -42,21 +44,31 @@ public class Turno implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 60)
     @Column(name = "Id_Turno")
     private String idTurno;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 60)
     @Column(name = "Num_Turno")
     private String numTurno;
     @Basic(optional = false)
+    @NotNull
     @Column(name = "Fecha")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 1)
     @Column(name = "Atendido")
     private String atendido;
     @JoinColumn(name = "Usuario", referencedColumnName = "Correo_Id")
     @ManyToOne(optional = false)
     private Usuario usuario;
+    @JoinColumn(name = "ServicioID", referencedColumnName = "Id_Servicio")
+    @ManyToOne(optional = false)
+    private Servicio servicioID;
     @JoinColumn(name = "Sede", referencedColumnName = "ID_Sede")
     @ManyToOne(optional = false)
     private Sede sede;
@@ -115,6 +127,14 @@ public class Turno implements Serializable {
 
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
+    }
+
+    public Servicio getServicioID() {
+        return servicioID;
+    }
+
+    public void setServicioID(Servicio servicioID) {
+        this.servicioID = servicioID;
     }
 
     public Sede getSede() {
