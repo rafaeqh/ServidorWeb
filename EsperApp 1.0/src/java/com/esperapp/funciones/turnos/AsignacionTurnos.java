@@ -35,7 +35,7 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
         private EntityManager em;
     
     @Override
-    public String asignaTurnos(String CorreoUsuario, String Id_Sede){
+    public String asignaTurnos(String CorreoUsuario, String Id_Sede, String Id_Servicio){
         Date fecha = new Date();
         fecha.getTime();
         Query q;
@@ -51,6 +51,7 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
                    ultimoTurnRetornar = Integer.toString(ultimoTurno);
                     Usuario us = em.find(Usuario.class, CorreoUsuario);
                     Sede sedeBuscar = em.find(Sede.class, Id_Sede);
+                    Servicio servicioID = em.find(Servicio.class, Id_Servicio);
                     auxT.setFecha(fecha);
                     if(turnos.isEmpty()){
                         auxT.setNumTurno("1");
@@ -61,6 +62,7 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
                     }
                     auxT.setUsuario(us);
                     auxT.setSede(sedeBuscar);
+                    auxT.setServicioID(servicioID);
 
                     auxT.setAtendido("0");
         
@@ -76,6 +78,15 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
         
         //em.persist(auxT);
         return ultimoTurnRetornar;
+    }
+    public Turno buscarTurno(String turno){
+        Turno t = new Turno();
+        try{
+           t = em.find(Turno.class, turno);
+        }catch(Exception e){
+            t=null;
+        }
+        return t;
     }
     @Override
     public boolean loginAdmin(String idCorreo, String contra){

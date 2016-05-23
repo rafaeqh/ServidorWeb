@@ -9,6 +9,7 @@ import com.esperapp.entidades.Empleado;
 import com.esperapp.entidades.Entidad;
 import com.esperapp.entidades.Sede;
 import com.esperapp.entidades.Servicio;
+import com.esperapp.entidades.Turno;
 import com.esperapp.entidades.TurnoBackUp;
 
 import com.esperapp.funciones.turnos.AsignacionTurnosLocal;
@@ -57,11 +58,12 @@ public class AsignarTurnos {
      * Web service operation
      */
     @WebMethod(operationName = "AsignarTurno")
-    public String AsignarTurno(@WebParam(name = "CorreoUsuario") String CorreoUsuario, @WebParam(name = "Id_Sede") String Id_Sede) {
+    public String AsignarTurno(@WebParam(name = "CorreoUsuario") String CorreoUsuario, @WebParam(name = "Id_Sede") String Id_Sede, @WebParam(name = "Id_Servicio") String Id_Servicio) {
         String retorno;
-        retorno = at.asignaTurnos(CorreoUsuario, Id_Sede);
+        retorno = at.asignaTurnos(CorreoUsuario, Id_Sede, Id_Servicio);
         return retorno;
     }
+    
 
     /**
      * Web service operation
@@ -228,6 +230,15 @@ public class AsignarTurnos {
     public List<String> AtenderCliente(@WebParam(name = "idSede") String idSede, @WebParam(name = "cedula") String cedula) {
         //TODO write your implementation code here:
         return null;
+    }
+
+    /**
+     * Web service operation
+     */
+    @WebMethod(operationName = "buscarTurno")
+    public Turno buscarTurno(@WebParam(name = "turno") String turno) {
+        //TODO write your implementation code here:
+        return at.buscarTurno(turno);
     }
 
     /**

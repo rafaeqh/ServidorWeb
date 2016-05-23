@@ -10,6 +10,7 @@ import com.esperapp.entidades.Entidad;
 import com.esperapp.entidades.Sede;
 import com.esperapp.entidades.Servicio;
 import com.esperapp.entidades.Trabajo;
+import com.esperapp.entidades.Turno;
 import com.esperapp.entidades.TurnoBackUp;
 import java.util.List;
 import java.util.Vector;
@@ -27,7 +28,7 @@ public interface AsignacionTurnosLocal {
 
     public boolean loginEmpleado(String cedula, String contra,String sede);
 
-    public String asignaTurnos(String CorreoUsuario, String Id_Sede);
+    public String asignaTurnos(String CorreoUsuario, String Id_Sede, String Id_Servicio);
 
     //public String BuscarSede(String CorreoUsuario, String Id_Sede);
 
@@ -75,6 +76,8 @@ public interface AsignacionTurnosLocal {
     public List<Sede> BuscarSedesClase();
 
     public List<String> AtenderCliente(String idSede, String cedula);
+
+    public Turno buscarTurno(String turno);
 
     
     
