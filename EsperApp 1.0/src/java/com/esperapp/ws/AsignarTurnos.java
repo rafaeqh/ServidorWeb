@@ -230,7 +230,7 @@ public class AsignarTurnos {
     @WebMethod(operationName = "AtenderCliente")
     public List<String> AtenderCliente(@WebParam(name = "idSede") String idSede, @WebParam(name = "cedula") String cedula) {
         //TODO write your implementation code here:
-        return null;
+        return at.AtenderCliente(idSede, cedula);
     }
 
     /**
@@ -263,11 +263,39 @@ public class AsignarTurnos {
     /**
      * Web service operation
      */
-    @WebMethod(operationName = "asignarTrabajadorParaUsuario")
-    public Trabajo asignarTrabajadorParaUsuario(@WebParam(name = "Cedula") String Cedula) {
+    @WebMethod(operationName = "enviarTrabajo")
+    public Trabajo enviarTrabajo(@WebParam(name = "trabajo") Trabajo trabajo) {
         //TODO write your implementation code here:
         return null;
     }
+
+    /**
+     * Web service operation
+     */
+    @WebMethod(operationName = "RegistrarComoAtendido")
+    public String RegistrarComoAtendido(@WebParam(name = "idTurno") String idTurno, @WebParam(name = "idReceptor") String idReceptor) {
+        //TODO write your implementation code here:
+        return at.RegistrarComoAtendido(idTurno, idReceptor);
+    }
+
+    /**
+     * Web service operation
+     */
+    @WebMethod(operationName = "VerHistorialTurnos")
+    public List<Turno> VerHistorialTurnos(@WebParam(name = "idCorreo") String idCorreo) {
+        //TODO write your implementation code here:
+        return at.VerHistorialTurnos(idCorreo);
+    }
+
+    /**
+     * Web service operation
+     */
+    @WebMethod(operationName = "TurnosNoAtendidosEmpleado")
+    public List<Turno> TurnosNoAtendidosEmpleado(@WebParam(name = "idSede") String idSede) {
+        //TODO write your implementation code here:
+        return at.TurnosNoAtendidosEmpleado(idSede);
+    }
+
 
     /**
      * Web service operation

@@ -35,13 +35,16 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
         private EntityManager em;
     //----------------------METODOS DE TURNOS--------------------------------------
     @Override
-    public String asignaTurnos(String CorreoUsuario, String Id_Sede, String Id_Servicio){
+    public String asignaTurnos(String CorreoUsuario, String Id_Sede,String servicioId){
         Date fecha = new Date();
         fecha.getTime();
-        Query q;
+        Query q, q1;
         int ultimoTurno = -1;
         String ultimoTurnRetornar ="-1";
          try{
+             
+             
+             
                q = em.createNativeQuery("select * from Turno");
         
                     List <Turno> turnos = q.getResultList();
@@ -51,7 +54,7 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
                    ultimoTurnRetornar = Integer.toString(ultimoTurno);
                     Usuario us = em.find(Usuario.class, CorreoUsuario);
                     Sede sedeBuscar = em.find(Sede.class, Id_Sede);
-                    Servicio servicioID = em.find(Servicio.class, Id_Servicio);
+                    Servicio servicioBuscar = em.find(Servicio.class, servicioId);
                     auxT.setFecha(fecha);
                     if(turnos.isEmpty()){
                         auxT.setNumTurno("1");
@@ -62,13 +65,13 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
                     }
                     auxT.setUsuario(us);
                     auxT.setSede(sedeBuscar);
-                    auxT.setServicioID(servicioID);
-
+                    auxT.setServicioID(servicioBuscar);
                     auxT.setAtendido("0");
         
         
         
         em.merge(auxT);
+             
              
          }catch(Exception ex){
              System.out.println("Error al buscar turnos ---------");
@@ -112,7 +115,7 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
         return retorno;      
     }
     public Trabajo asignarTrabajadorParaUsuario(String Cedula){
-        Trabajo retorno = new Trabajo();
+        Trabajo retorno = null;
         Query q;
         q= em.createNativeQuery("select * from Trabajo where Empleado='"+Cedula);
         try{
@@ -204,7 +207,7 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
     public String BuscarReceptorLibre(){
         
         String upd = new String();
-        upd= "select Id_Receptor from Receptor where Id_Receptor = '0'  ";
+        upd= "select Id_Receptor from Receptor where Estado = '0' ";
         Vector<String> libres = new Vector<String>(); 
         Query q;
         q=em.createNativeQuery(upd);
@@ -789,7 +792,7 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
    
     //-----------------------------------------------------------------
     
-    public boolean AgregarServicio (String codigoSede, String servicio){
+public boolean AgregarServicio (String codigoSede, String servicio){
     
        boolean retorno = false ;
          List<String> serviciosLista;
@@ -861,7 +864,7 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
      
      }
     
-        public boolean RegistarUsuario(String Nombre, String CorreoUsuario, String contrasena){
+public boolean RegistarUsuario(String Nombre, String CorreoUsuario, String contrasena){
     
         boolean retornar ;
         
@@ -885,24 +888,24 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
         return retornar;
         
     }
-        public List<String> AtenderCliente(String idSede, String cedula){
+public List<String> AtenderCliente(String idSede, String cedula){
           List<String> retorno = new ArrayList<String>() ;
-          Trabajo trabajo;
+          List<Trabajo> trabajo;
           List<Turno> turnosAtender;
           Turno turno =null;
-          Empleado emp = new Empleado();
+          
           String upd = new String();
           String upd1 = new String();
           upd = "select * from Turno where Sede='"+idSede+"'and Atendido = '0'";
-          
-          Query q, q1;
+          Query q;
           Usuario usuario = null;
 
           try{
-            
-            emp = em.find(Empleado.class, cedula);
+              
             q = em.createNativeQuery(upd,Turno.class);
             turnosAtender = q.getResultList();
+ 
+            
 
             if(!turnosAtender.isEmpty()){
                 
@@ -914,7 +917,7 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
                 retorno.add(aux);
                 retorno.add(usuario.getNombre());
                 retorno.add(usuario.getCorreoId());
-                
+                           
             
             }
             
@@ -929,8 +932,82 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
       
       
       return retorno;
-      }
+}
+/*public TurnoBackUp enviarTrabajo(){
+    TurnoBackUp tb = new TurnoBackUp();
+    try{
+        tb = 
+    }
+    return tb;
+}*/
+public String RegistrarComoAtendido(String idTurno, String idReceptor){
+    String estado = null, upd, upd2;
+    Receptor r;
+    Query q;
+    upd = "update Turno set Atendido = 1 where Id_Turno = "+idTurno;
+    try{
+        q=em.createNativeQuery(upd);
+        q.executeUpdate();
+        CambiarEstado(idReceptor);
+        r = em.find(Receptor.class, idReceptor);
+        estado = r.getEstado();
+    }catch(Exception e){
+        e.printStackTrace();
+    }
+    return estado;
+}
+    public List<Turno> VerHistorialTurnos(String correoId){
+          List<Turno> retorno = new ArrayList<Turno>() ;   
+          String upd = new String();
+         
+          upd = "select * from Turno where Usuario='"+correoId+"'";
+          Query q;
+          System.out.println("correo "+correoId);
 
-    
+          try{
+              
+            q = em.createNativeQuery(upd,Turno.class);
+            retorno = q.getResultList();
+   
+            
+            
+         
+             }catch(Exception ex){
+             
+                 //ex.printStackTrace();
+             System.out.println("NO existe la sede");
+             
+         }
+      
+      
+      
+      return retorno;
+      }
+    public List<Turno> TurnosNoAtendidosEmpleado(String idSede){
+          List<Turno> retorno = new ArrayList<Turno>() ;   
+          String upd = new String();
+         
+          upd = "select * from Turno where Sede='"+idSede+"' and Atendido = '0'";
+          Query q;
+
+          try{
+              
+            q = em.createNativeQuery(upd,Turno.class);
+            retorno = q.getResultList();
+   
+            
+            
+         
+             }catch(Exception ex){
+             
+                 //ex.printStackTrace();
+             System.out.println("NO existe la sede");
+             
+         }
+      
+      
+      
+      return retorno;
+      }
 }
 

@@ -81,7 +81,15 @@ public interface AsignacionTurnosLocal {
 
     public boolean cancelarTurno(String Id_Turno);
 
-    public Trabajo asignarTrabajadorParaUsuario(String Cedula);
+    //public Trabajo asignarTrabajadorParaUsuario(String Cedula);
+
+    //public Trabajo enviarTrabajo(Trabajo trabajo);
+
+    public String RegistrarComoAtendido(String idTurno, String idReceptor);
+
+    public List<Turno> VerHistorialTurnos(String correoId);
+
+    public List<Turno> TurnosNoAtendidosEmpleado(String idSede);
 
     
     
