@@ -14,6 +14,12 @@ import com.esperapp.entidades.Turno;
 import com.esperapp.entidades.TurnoBackUp;
 
 import com.esperapp.funciones.turnos.AsignacionTurnosLocal;
+import com.esperapp.funciones.turnos.ControladorAdministrador;
+import com.esperapp.funciones.turnos.ControladorAdministradorLocal;
+import com.esperapp.funciones.turnos.ControladorEmpleado;
+import com.esperapp.funciones.turnos.ControladorEmpleadoLocal;
+import com.esperapp.funciones.turnos.ControladorUsuario;
+import com.esperapp.funciones.turnos.ControladorUsuarioLocal;
 import java.util.List;
 import java.util.Vector;
 import javax.ejb.EJB;
@@ -32,7 +38,12 @@ import javax.jws.Oneway;
 public class AsignarTurnos {
     @EJB
     private AsignacionTurnosLocal at;
-    
+    @EJB
+    private ControladorAdministradorLocal ca;
+    @EJB
+    private ControladorUsuarioLocal cu;
+    @EJB
+    private ControladorEmpleadoLocal ce;
     
 
     /**
@@ -294,6 +305,16 @@ public class AsignarTurnos {
     public List<Turno> TurnosNoAtendidosEmpleado(@WebParam(name = "idSede") String idSede) {
         //TODO write your implementation code here:
         return at.TurnosNoAtendidosEmpleado(idSede);
+    }
+
+    /**
+     * Web service operation
+     */
+    @WebMethod(operationName = "EditarCuentaAdmin")
+    public boolean EditarCuentaAdmin(@WebParam(name = "Correo_Id") String Correo_Id, @WebParam(name = "nombre") String nombre, @WebParam(name = "contra") String contra) {
+        //TODO write your implementation code here:
+        
+        return ca.EditarCuenta(Correo_Id, nombre, contra);
     }
 
 

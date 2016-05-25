@@ -21,7 +21,7 @@ import javax.ejb.Local;
  * @author user
  */
 @Local
-public interface AsignacionTurnosLocal {
+public interface AsignacionTurnosLocal{
 
 
     public boolean loginAdmin(String nombre, String contra);

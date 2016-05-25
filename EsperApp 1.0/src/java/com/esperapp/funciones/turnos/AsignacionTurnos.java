@@ -20,20 +20,20 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-//import org.hibernate.ejb.AbstractQueryImpl;
+
 
 /**
  *
  * @author user
  */
 @Stateless
-public class AsignacionTurnos implements AsignacionTurnosLocal {
+public class AsignacionTurnos implements AsignacionTurnosLocal, ControladorAdministradorLocal, ControladorEmpleadoLocal, ControladorUsuarioLocal {
 
     public AsignacionTurnos() {
     }
     @PersistenceContext (unitName = "EsperAppPU")
         private EntityManager em;
-    //----------------------METODOS DE TURNOS--------------------------------------
+   
     @Override
     public String asignaTurnos(String CorreoUsuario, String Id_Sede,String servicioId){
         Date fecha = new Date();
@@ -126,7 +126,7 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
         }
         return retorno;
     }
-    //--------------------------------------------------------------------------------
+    
     @Override
     public boolean loginAdmin(String idCorreo, String contra){
         boolean retorno = false;
@@ -180,13 +180,7 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
         }
         return retorno;
     }
-    /*public String BuscarSede(String CorreoUsuario, String iDSede){
-        Sede sed = em.find(Sede.class, iDSede);
-        System.out.println("sede: " + sed.getNombre());
-        String turno = this.asignaTurnos(CorreoUsuario, sed);
-        
-        return turno;
-    }*/
+    
     public void CambiarEstado(String Id_Receptor){
         Receptor r = em.find(Receptor.class, Id_Receptor);
         String upd = new String();
@@ -247,15 +241,7 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
         
     }
     
-    /**
-     *
-     * @param NitEntidad
-     * @param Nombre
-     * @param NombreContacto
-     * @param TelefonoContacto
-     * @param Correo
-     * @return
-     */
+    
     @Override
      public int AgregarSede(String NitEntidad, String Nombre, String NombreContacto, String TelefonoContacto, String Correo, String Direccion){
     
@@ -381,43 +367,7 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
      return vecRetornar;
      
      }
-     /*
-     public  TurnoBackUp TurnoReceptor(String cedulaEmp, String idSede){
-         List <Turno> turnos = new ArrayList<Turno>();
-         Date fecha = new Date();
-         fecha.getTime();
-         Turno t = new Turno();
-         TurnoBackUp tb = new TurnoBackUp();
-         Trabajo tr= new Trabajo();
-         Query q, q1 ;
-         int max;
-         System.out.println("cedula: "+cedulaEmp+"Sede= "+idSede);
-         q=em.createNativeQuery("select * from Turno where Sede='"+idSede+"' and Atendido='0'",Turno.class);
-         q1=em.createNativeQuery("select * from Turno_BackUp", TurnoBackUp.class);
-         try{
-             turnos= q.getResultList();
-             max = q1.getResultList().size()+1;
-             
-             if(!turnos.isEmpty()){ 
-                Iterator<Turno> itTurno = turnos.iterator();
-                t=itTurno.next();
-                tb.setConsecutivo(String.valueOf(max));
-                tb.setCedula(cedulaEmp);
-                tb.setCorreoId(t.getUsuario().getCorreoId());
-                tb.setFecha(fecha);
-                tr=HallarReceptor(cedulaEmp, idSede);
-                tb.setReceptor(tr);
-                tb.setTurno(t);
-                em.merge(tb);
-             }else{
-                 System.out.println("no encontro turno");
-                 tb = null;
-             }
-         }catch(Exception ex){
-             System.out.println("No hay turnos "+ex.getLocalizedMessage());
-         }
-         return tb;
-     }*/
+     
     
      public Trabajo HallarReceptor(String cedulaEmp, String idSede){
          Trabajo t = new Trabajo();
@@ -434,43 +384,7 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
          System.out.println("en trabajo "+t.getEmpleado().getNombre()+" "+t.getReceptor1().getSede().getNombre());
          return t;
      }
-     /*public Turno PedirTurnoEmpleado(String idSede, String Cedula){
-         Query q;
-         List<Turno> Turnos;
-         q=em.createNativeQuery("select * from Turno where Atendido='0' and Sede='"+idSede+"'", Turno.class );
-         try{
-             Turnos = q.getResultList();
-             
-         }catch(Exception ex){
-             ex.printStackTrace();
-         }
-     }
-     public Trabajo NoAtendido(String turno, String idSede, String idServicio){
-         Query q, q1, q2; 
-         List<Trabajo> trabajadores;
-         Turno t;
-         Trabajo retorno = null;
-         Receptor receptor;
-         q=em.createNativeQuery("select * from Trabajo where Sede='"+idSede+"'", Trabajo.class);
-         q1=em.createNativeQuery("select * from Turno where Atendido='0' and Id_Turno='"+turno+"'", Turno.class );
-         q2=em.createNativeQuery("select * from Receptor where Id_Servicio='"+idServicio+"' and Estado='0'", Receptor.class);
-         q2=em.createNativeQuery("select * from Empleado where Sede='"+idSede+"'", Receptor.class);
-         
-         try{
-             trabajadores = q.getResultList();
-             
-             t = (Turno) q1.getSingleResult();
-             receptor=(Receptor) q2.getSingleResult();
-             if(t.getServicioID().getIdServicio().equals(idServicio)){
-                 retorno.setReceptor1(receptor);
-                 retorno.setEmpleado(receptor.getTrabajo().getEmpleado());
-             }
-         }catch(Exception e){
-             e.printStackTrace();
-         }
-         return retorno;
-    }
-     */
+     
     @Override
     public boolean AgregarEmpleado(String cedula,String nombre,String contrasena,String sede){
       
@@ -763,7 +677,7 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
      
      }
      
-     //Metodos usuario-----------------------------------------------------------------------------------------------
+     
    
     public boolean loginUsuario(String idCorreo, String contra){
         boolean retorno = false;
@@ -790,7 +704,7 @@ public class AsignacionTurnos implements AsignacionTurnosLocal {
        return retorno;
     }
    
-    //-----------------------------------------------------------------
+   
     
 public boolean AgregarServicio (String codigoSede, String servicio){
     
@@ -933,13 +847,7 @@ public List<String> AtenderCliente(String idSede, String cedula){
       
       return retorno;
 }
-/*public TurnoBackUp enviarTrabajo(){
-    TurnoBackUp tb = new TurnoBackUp();
-    try{
-        tb = 
-    }
-    return tb;
-}*/
+
 public String RegistrarComoAtendido(String idTurno, String idReceptor){
     String estado = null, upd, upd2;
     Receptor r;
@@ -1009,5 +917,12 @@ public String RegistrarComoAtendido(String idTurno, String idReceptor){
       
       return retorno;
       }
+
+    @Override
+    public boolean EditarCuenta(String Correo_Id, String nombre, String contra) {
+        ControladorAdministrador ca = new ControladorAdministrador();
+        boolean retorno = ca.EditarCuenta(Correo_Id, nombre, contra);
+        return retorno;
+    }
 }
 
